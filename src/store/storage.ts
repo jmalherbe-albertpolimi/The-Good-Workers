@@ -1,9 +1,9 @@
-export const DEMO_STATE_KEY = 'studentpop_demo_v1';
-export const ACCOUNTS_KEY = 'studentpop_accounts_v1';
-export const SESSION_KEY = 'studentpop_session_v1';
+export const DEMO_STATE_KEY = 'tgw_demo_v1';
+export const ACCOUNTS_KEY = 'tgw_accounts_v1';
+export const SESSION_KEY = 'tgw_session_v1';
 
 export function stateKeyFor(email: string) {
-  return `studentpop_state_${email.toLowerCase()}`;
+  return `tgw_state_${email.toLowerCase()}`;
 }
 
 export function readJson<T>(key: string): T | null {

@@ -11,12 +11,12 @@ export function WelcomeScreen() {
         <circle cx="40" cy="720" r="120" fill="#ffffff" fillOpacity="0.1" />
         <rect x="40" y="90" width="70" height="70" rx="20" fill="#f0507c" fillOpacity="0.9" transform="rotate(14 75 125)" />
         <rect x="320" y="300" width="90" height="90" rx="26" fill="#f7c948" fillOpacity="0.9" transform="rotate(-12 365 345)" />
-        <circle cx="150" cy="260" r="16" fill="#14143c" fillOpacity="0.9" />
+        <circle cx="392" cy="600" r="16" fill="#14143c" fillOpacity="0.9" />
       </svg>
 
       <div className="relative flex flex-1 flex-col justify-center">
-        <div className="text-[52px] font-black leading-none tracking-tight">
-          Student<span className="text-star">Pop</span>
+        <div className="text-[48px] font-black leading-[1.05] tracking-tight">
+          The Good <span className="text-star">Worker</span>
         </div>
         <p className="mt-4 text-[22px] font-semibold leading-snug text-white/95">
           Des missions étudiantes, payées, quand tu veux.
