@@ -54,7 +54,7 @@ function ageOf(birthDate: string) {
   const b = new Date(`${birthDate}T00:00:00`);
   if (Number.isNaN(b.getTime())) return 0;
   const t = new Date();
-  let age = t.getFullYear() - b.getFullYear();
+  const age = t.getFullYear() - b.getFullYear();
   const beforeBirthday = t.getMonth() < b.getMonth() || (t.getMonth() === b.getMonth() && t.getDate() < b.getDate());
   return beforeBirthday ? age - 1 : age;
 }
@@ -62,30 +62,30 @@ function ageOf(birthDate: string) {
 function stepError(step: Step, f: Form): string | null {
   switch (step) {
     case 'account':
-      if (!EMAIL_RE.test(f.email.trim())) return 'Entre une adresse email valide.';
-      if (f.password.length < 8) return '8 caractères minimum pour le mot de passe.';
+      if (!EMAIL_RE.test(f.email.trim())) return 'Enter a valid email address.';
+      if (f.password.length < 8) return 'Your password needs at least 8 characters.';
       return null;
     case 'identity':
-      if (!f.firstName.trim() || !f.lastName.trim()) return 'Prénom et nom sont obligatoires.';
-      if (digits(f.phone).length !== 10) return 'Le numéro de téléphone doit avoir 10 chiffres.';
+      if (!f.firstName.trim() || !f.lastName.trim()) return 'First name and last name are required.';
+      if (digits(f.phone).length !== 10) return 'Your phone number must have 10 digits.';
       {
         const iso = birthToIso(f.birthDate);
-        if (!iso) return 'Date de naissance au format JJ/MM/AAAA.';
-        if (ageOf(iso) < 18) return 'Il faut avoir 18 ans pour rejoindre The Good Workers.';
+        if (!iso) return 'Date of birth must be DD/MM/YYYY.';
+        if (ageOf(iso) < 18) return 'You must be 18 to join The Good Workers.';
       }
       return null;
     case 'studies':
-      if (!f.school.trim()) return 'Indique ton école ou ton université.';
-      if (!f.studyLevel) return "Choisis ton niveau d'études.";
-      if (!f.city.trim()) return 'Indique ta ville.';
+      if (!f.school.trim()) return 'Tell us your school or university.';
+      if (!f.studyLevel) return 'Choose your study level.';
+      if (!f.city.trim()) return 'Tell us your city.';
       return null;
     case 'status':
-      if (f.hasSiret === null) return 'Réponds à la question pour continuer.';
-      if (f.hasSiret && digits(f.siret).length !== 14) return 'Un numéro SIRET comporte 14 chiffres.';
+      if (f.hasSiret === null) return 'Answer the question to continue.';
+      if (f.hasSiret && digits(f.siret).length !== 14) return 'A SIRET number has 14 digits.';
       return null;
     case 'preferences':
-      if (f.regions.length === 0) return 'Choisis au moins une région.';
-      if (f.categories.length === 0) return 'Choisis au moins une catégorie.';
+      if (f.regions.length === 0) return 'Choose at least one region.';
+      if (f.categories.length === 0) return 'Choose at least one category.';
       return null;
     case 'done':
       return null;
@@ -121,14 +121,14 @@ export function SignupScreen() {
       return;
     }
     if (step === 'account' && emailExists(form.email)) {
-      setExtraError('Un compte existe déjà avec cet email. Connecte-toi plutôt.');
+      setExtraError('An account already exists with this email. Sign in instead.');
       setShowError(true);
       return;
     }
     goTo(index + 1);
   };
 
-  const back = () => (index === 0 ? navigate('/bienvenue') : goTo(index - 1));
+  const back = () => (index === 0 ? navigate('/welcome') : goTo(index - 1));
 
   const finish = async () => {
     setBusy(true);
@@ -157,14 +157,14 @@ export function SignupScreen() {
       <div className="flex h-full flex-col bg-teal px-6 pb-[max(env(safe-area-inset-bottom),24px)] pt-[max(env(safe-area-inset-top),24px)] text-center text-white">
         <div className="flex flex-1 flex-col items-center justify-center">
           <span className="text-[96px] leading-none">🎉</span>
-          <h1 className="mt-6 text-[36px] font-black leading-tight">Bienvenue {form.firstName.trim()} !</h1>
+          <h1 className="mt-6 text-[36px] font-black leading-tight">Welcome {form.firstName.trim()}!</h1>
           <p className="mt-4 text-lg text-white/90">
-            Ton compte est créé. L'équipe The Good Workers valide ton profil sous 48 h — en attendant, découvre déjà les propositions autour de toi.
+            Your account is created. The Good Workers team reviews your profile within 48 hours — meanwhile, take a look at the proposals near you.
           </p>
         </div>
         {showError && error && <p className="mb-3 text-sm font-semibold text-[#ffd6d6]">{error}</p>}
         <button type="button" onClick={finish} disabled={busy} className="w-full rounded-full bg-white py-4 text-lg font-bold text-teal disabled:opacity-60">
-          {busy ? 'Création du compte…' : "C'est parti"}
+          {busy ? 'Creating your account…' : "Let's go"}
         </button>
       </div>
     );
@@ -175,7 +175,7 @@ export function SignupScreen() {
   return (
     <div className="flex h-full flex-col bg-paper">
       <header className="flex items-center gap-2 px-4 pt-[max(env(safe-area-inset-top),16px)]">
-        <button type="button" onClick={back} aria-label="Retour" className="-ml-2 rounded-full p-2 active:bg-tile">
+        <button type="button" onClick={back} aria-label="Back" className="-ml-2 rounded-full p-2 active:bg-tile">
           <ChevronLeft size={28} />
         </button>
         <div className="flex flex-1 gap-1.5">
@@ -206,12 +206,12 @@ export function SignupScreen() {
             >
               {step === 'account' && (
                 <>
-                  <StepTitle title="Crée ton compte" subtitle="Tes identifiants pour te connecter à The Good Workers." />
+                  <StepTitle title="Create your account" subtitle="The details you'll use to sign in to The Good Workers." />
                   <div className="space-y-4">
                     <Field label="Email">
-                      <input type="email" inputMode="email" autoComplete="email" value={form.email} onChange={(e) => set('email', e.target.value)} className={inputClass} placeholder="toi@email.fr" autoFocus />
+                      <input type="email" inputMode="email" autoComplete="email" value={form.email} onChange={(e) => set('email', e.target.value)} className={inputClass} placeholder="you@email.com" autoFocus />
                     </Field>
-                    <Field label="Mot de passe" hint="8 caractères minimum">
+                    <Field label="Password" hint="8 characters minimum">
                       <div className="relative">
                         <input
                           type={showPw ? 'text' : 'password'}
@@ -220,7 +220,7 @@ export function SignupScreen() {
                           onChange={(e) => set('password', e.target.value)}
                           className={`${inputClass} pr-12`}
                         />
-                        <button type="button" onClick={() => setShowPw((v) => !v)} aria-label={showPw ? 'Masquer' : 'Afficher'} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted">
+                        <button type="button" onClick={() => setShowPw((v) => !v)} aria-label={showPw ? 'Hide' : 'Show'} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted">
                           {showPw ? <EyeOff size={20} /> : <Eye size={20} />}
                         </button>
                       </div>
@@ -231,24 +231,24 @@ export function SignupScreen() {
 
               {step === 'identity' && (
                 <>
-                  <StepTitle title="Qui es-tu ?" subtitle="Ces infos apparaîtront sur tes missions." />
+                  <StepTitle title="Who are you?" subtitle="These details appear on your missions." />
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-3">
-                      <Field label="Prénom">
+                      <Field label="First name">
                         <input autoComplete="given-name" value={form.firstName} onChange={(e) => set('firstName', e.target.value)} className={inputClass} autoFocus />
                       </Field>
-                      <Field label="Nom">
+                      <Field label="Last name">
                         <input autoComplete="family-name" value={form.lastName} onChange={(e) => set('lastName', e.target.value)} className={inputClass} />
                       </Field>
                     </div>
-                    <Field label="Téléphone">
+                    <Field label="Phone">
                       <input type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} className={inputClass} placeholder="06 12 34 56 78" />
                     </Field>
-                    <Field label="Date de naissance" hint="Il faut avoir 18 ans pour travailler avec The Good Workers.">
+                    <Field label="Date of birth" hint="You must be 18 to work with The Good Workers.">
                       <input
                         inputMode="numeric"
                         autoComplete="bday"
-                        placeholder="JJ/MM/AAAA"
+                        placeholder="DD/MM/YYYY"
                         maxLength={10}
                         value={form.birthDate}
                         onChange={(e) => set('birthDate', formatBirthInput(e.target.value))}
@@ -261,12 +261,12 @@ export function SignupScreen() {
 
               {step === 'studies' && (
                 <>
-                  <StepTitle title="Tes études" subtitle="Pour te proposer des missions compatibles avec ton emploi du temps." />
+                  <StepTitle title="Your studies" subtitle="So we can offer missions that fit your timetable." />
                   <div className="space-y-4">
-                    <Field label="École / université">
-                      <input value={form.school} onChange={(e) => set('school', e.target.value)} className={inputClass} placeholder="Ex. Université Paris-Dauphine" autoFocus />
+                    <Field label="School / university">
+                      <input value={form.school} onChange={(e) => set('school', e.target.value)} className={inputClass} placeholder="e.g. Paris-Dauphine University" autoFocus />
                     </Field>
-                    <Field label="Niveau d'études">
+                    <Field label="Study level">
                       <div className="mt-2 flex flex-wrap gap-2">
                         {STUDY_LEVELS.map((lvl) => (
                           <Chip key={lvl} active={form.studyLevel === lvl} onClick={() => set('studyLevel', lvl)}>
@@ -275,8 +275,8 @@ export function SignupScreen() {
                         ))}
                       </div>
                     </Field>
-                    <Field label="Ville">
-                      <input autoComplete="address-level2" value={form.city} onChange={(e) => set('city', e.target.value)} className={inputClass} placeholder="Ex. Paris" />
+                    <Field label="City">
+                      <input autoComplete="address-level2" value={form.city} onChange={(e) => set('city', e.target.value)} className={inputClass} placeholder="e.g. Paris" />
                     </Field>
                   </div>
                 </>
@@ -284,21 +284,21 @@ export function SignupScreen() {
 
               {step === 'status' && (
                 <>
-                  <StepTitle title="Ton statut auto-entrepreneur" subtitle="Pour être payé, The Good Workers travaille avec des étudiants auto-entrepreneurs." />
+                  <StepTitle title="Your self-employed status" subtitle="To get paid, The Good Workers works with self-employed students." />
                   <div className="space-y-3">
-                    <OptionCard active={form.hasSiret === true} onClick={() => set('hasSiret', true)} title="Oui, j'ai déjà mon SIRET" description="Je le renseigne tout de suite." />
-                    <OptionCard active={form.hasSiret === false} onClick={() => set('hasSiret', false)} title="Pas encore" description="Je le créerai après mon inscription." />
+                    <OptionCard active={form.hasSiret === true} onClick={() => set('hasSiret', true)} title="Yes, I already have my SIRET" description="I'll enter it right now." />
+                    <OptionCard active={form.hasSiret === false} onClick={() => set('hasSiret', false)} title="Not yet" description="I'll set it up after signing up." />
                   </div>
                   {form.hasSiret === true && (
                     <div className="mt-5">
-                      <Field label="Numéro SIRET" hint="14 chiffres">
+                      <Field label="SIRET number" hint="14 digits">
                         <input inputMode="numeric" value={form.siret} onChange={(e) => set('siret', e.target.value)} className={`${inputClass} tnum`} placeholder="123 456 789 00012" autoFocus />
                       </Field>
                     </div>
                   )}
                   {form.hasSiret === false && (
                     <div className="mt-5 rounded-2xl bg-teal-light p-4 text-[15px] leading-relaxed">
-                      <span className="font-bold">Pas de panique.</span> La création du statut est gratuite et prend une dizaine de minutes. L'équipe t'accompagne une fois ton profil validé.
+                      <span className="font-bold">No worries.</span> Registering is free and takes about ten minutes. The team will walk you through it once your profile is approved.
                     </div>
                   )}
                 </>
@@ -306,8 +306,8 @@ export function SignupScreen() {
 
               {step === 'preferences' && (
                 <>
-                  <StepTitle title="Tes préférences" subtitle="Où et sur quoi veux-tu recevoir des propositions ?" />
-                  <Field label="Régions">
+                  <StepTitle title="Your preferences" subtitle="Where and on what would you like to get proposals?" />
+                  <Field label="Regions">
                     <div className="mt-2 flex flex-wrap gap-2">
                       {ALL_REGIONS.map((r) => (
                         <Chip key={r} active={form.regions.includes(r)} onClick={() => set('regions', toggle(form.regions, r))}>
@@ -317,7 +317,7 @@ export function SignupScreen() {
                     </div>
                   </Field>
                   <div className="mt-6">
-                    <Field label="Catégories de missions">
+                    <Field label="Mission categories">
                       <div className="mt-2 flex flex-wrap gap-2">
                         {ALL_CATEGORIES.map((c) => (
                           <Chip key={c} active={form.categories.includes(c)} onClick={() => set('categories', toggle(form.categories, c))}>
@@ -336,7 +336,7 @@ export function SignupScreen() {
         <div className="px-5 pb-[max(env(safe-area-inset-bottom),20px)] pt-3">
           {showError && error && <p className="mb-3 text-center text-sm font-semibold text-danger">{error}</p>}
           <button type="submit" className="w-full rounded-full bg-teal py-4 text-lg font-bold text-white active:opacity-90">
-            Continuer
+            Continue
           </button>
         </div>
       </form>

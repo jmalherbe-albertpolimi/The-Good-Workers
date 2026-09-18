@@ -60,7 +60,7 @@ export function SwipeCard({ mission, onDecide, onDetails }: Props) {
           <div className="min-w-0">
             <div className="truncate text-lg font-bold">{mission.company.name}</div>
             <div className="tnum text-[clamp(36px,11vw,52px)] font-black leading-none tracking-tighter">
-              {price.int},{price.dec}€
+              €{price.int}.{price.dec}
             </div>
           </div>
         </div>
@@ -72,18 +72,18 @@ export function SwipeCard({ mission, onDecide, onDetails }: Props) {
               <dd className="inline font-semibold">{formatDate(mission.date)}</dd>
             </div>
             <div>
-              <dt className="inline text-muted">Heures </dt>
+              <dt className="inline text-muted">Hours </dt>
               <dd className="inline font-semibold">{formatHours(mission.startTime, mission.endTime)}</dd>
             </div>
           </div>
           <div className="flex justify-between gap-3">
             <div className="min-w-0 truncate">
-              <dt className="inline text-muted">Lieu </dt>
+              <dt className="inline text-muted">Place </dt>
               <dd className="inline font-semibold">{mission.city}</dd>
             </div>
             <div className="whitespace-nowrap">
-              <dt className="inline text-muted">Student </dt>
-              <dd className="inline font-semibold">{mission.studentsCount}</dd>
+              <dt className="inline text-muted">Workers </dt>
+              <dd className="inline font-semibold">{mission.workersCount}</dd>
             </div>
           </div>
         </dl>
@@ -95,14 +95,14 @@ export function SwipeCard({ mission, onDecide, onDetails }: Props) {
           onClick={onDetails}
           className="mb-5 w-full rounded-full bg-tile py-4 text-lg font-semibold active:bg-black/10"
         >
-          Plus de détails
+          More details
         </button>
       </div>
 
       <div className="flex items-center justify-center gap-12 bg-tile py-6">
         <button
           type="button"
-          aria-label="Refuser"
+          aria-label="Decline"
           onClick={() => fly(-1)}
           className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-white shadow-[0_4px_14px_rgba(0,0,0,0.08)] active:scale-95"
         >
@@ -110,7 +110,7 @@ export function SwipeCard({ mission, onDecide, onDetails }: Props) {
         </button>
         <button
           type="button"
-          aria-label="Accepter"
+          aria-label="Accept"
           onClick={() => fly(1)}
           className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-white shadow-[0_4px_14px_rgba(0,0,0,0.08)] active:scale-95"
         >
@@ -122,13 +122,13 @@ export function SwipeCard({ mission, onDecide, onDetails }: Props) {
         style={{ opacity: acceptOpacity }}
         className="pointer-events-none absolute left-6 top-16 -rotate-12 rounded-xl border-4 border-teal px-3 py-1 text-3xl font-black text-teal"
       >
-        ACCEPTER
+        ACCEPT
       </motion.div>
       <motion.div
         style={{ opacity: refuseOpacity }}
         className="pointer-events-none absolute right-6 top-16 rotate-12 rounded-xl border-4 border-danger px-3 py-1 text-3xl font-black text-danger"
       >
-        REFUSER
+        DECLINE
       </motion.div>
     </motion.div>
   );

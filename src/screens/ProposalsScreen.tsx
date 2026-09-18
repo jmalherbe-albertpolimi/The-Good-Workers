@@ -4,9 +4,9 @@ import { CATEGORY_THEME, type Category } from '../data/types';
 import { useApp, selectProposed } from '../store/AppStore';
 import { Avatar } from '../components/Avatar';
 import { MissionDetailsSheet } from '../components/MissionDetailsSheet';
-import { SwipeCard, type Decision } from './propositions/SwipeCard';
+import { SwipeCard, type Decision } from './proposals/SwipeCard';
 
-export function PropositionsScreen() {
+export function ProposalsScreen() {
   const { state, dispatch } = useApp();
   const [favOnly, setFavOnly] = useState(false);
   const [catFilter, setCatFilter] = useState<Category | null>(null);
@@ -21,7 +21,7 @@ export function PropositionsScreen() {
   );
   const top = visible[0];
   const next = visible[1];
-  const theme = CATEGORY_THEME[top?.category ?? 'Vente'];
+  const theme = CATEGORY_THEME[top?.category ?? 'Retail'];
   const categories = Array.from(new Set(proposed.map((m) => m.category)));
 
   const decide = (id: string, decision: Decision) => {
@@ -31,10 +31,10 @@ export function PropositionsScreen() {
 
   const title =
     proposed.length === 0
-      ? 'Aucune proposition'
+      ? 'No proposals'
       : proposed.length === 1
-        ? 'Il y a 1 proposition'
-        : `Il y a ${proposed.length} propositions`;
+        ? 'There is 1 proposal'
+        : `There are ${proposed.length} proposals`;
 
   return (
     <div className="flex h-full flex-col transition-colors duration-500" style={{ backgroundColor: theme.bg }}>
@@ -45,7 +45,7 @@ export function PropositionsScreen() {
           type="button"
           role="switch"
           aria-checked={favOnly}
-          aria-label="Afficher uniquement mes catégories favorites"
+          aria-label="Only show my favourite categories"
           onClick={() => setFavOnly((v) => !v)}
           className={`relative h-9 w-16 shrink-0 rounded-full transition-colors ${favOnly ? 'bg-teal' : 'bg-black/10'}`}
         >
@@ -76,7 +76,7 @@ export function PropositionsScreen() {
               </button>
               {menuOpen && (
                 <div className="absolute left-0 right-0 top-full z-30 rounded-2xl bg-white p-2 shadow-xl">
-                  <MenuItem label="Toutes les catégories" count={proposed.length} active={!catFilter} onClick={() => { setCatFilter(null); setMenuOpen(false); }} />
+                  <MenuItem label="All categories" count={proposed.length} active={!catFilter} onClick={() => { setCatFilter(null); setMenuOpen(false); }} />
                   {categories.map((c) => (
                     <MenuItem
                       key={c}
@@ -103,7 +103,7 @@ export function PropositionsScreen() {
             </div>
           </>
         ) : (
-          <EmptyPropositions filtered={proposed.length > 0} onClear={() => { setFavOnly(false); setCatFilter(null); }} />
+          <EmptyProposals filtered={proposed.length > 0} onClear={() => { setFavOnly(false); setCatFilter(null); }} />
         )}
       </div>
 
@@ -130,21 +130,21 @@ function MenuItem({ label, count, active, onClick }: { label: string; count: num
   );
 }
 
-function EmptyPropositions({ filtered, onClear }: { filtered: boolean; onClear: () => void }) {
+function EmptyProposals({ filtered, onClear }: { filtered: boolean; onClear: () => void }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
       <div className="flex h-28 w-28 items-center justify-center rounded-full bg-white/70">
         <Search size={48} className="text-muted" />
       </div>
       <p className="mt-6 text-lg font-semibold">
-        {filtered ? 'Aucune proposition ne correspond à ce filtre.' : 'Aucune proposition pour le moment.'}
+        {filtered ? 'No proposal matches this filter.' : 'No proposals right now.'}
       </p>
       <p className="mt-2 text-muted">
-        {filtered ? 'Retire le filtre pour voir toutes les propositions.' : 'Reviens un peu plus tard, de nouvelles missions arrivent chaque jour.'}
+        {filtered ? 'Clear the filter to see every proposal.' : 'Check back a little later, new missions come in every day.'}
       </p>
       {filtered && (
         <button type="button" onClick={onClear} className="mt-6 rounded-full bg-white px-6 py-3 font-semibold shadow">
-          Voir toutes les propositions
+          See all proposals
         </button>
       )}
     </div>

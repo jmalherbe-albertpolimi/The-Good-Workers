@@ -3,10 +3,10 @@ import { MapPin, MessageCircle, User, Zap } from 'lucide-react';
 import { useApp, selectProposed } from '../store/AppStore';
 
 const tabs = [
-  { to: '/propositions', label: 'Propositions', Icon: Zap },
+  { to: '/proposals', label: 'Proposals', Icon: Zap },
   { to: '/missions', label: 'Missions', Icon: MapPin },
   { to: '/chat', label: 'Chat', Icon: MessageCircle },
-  { to: '/profil', label: 'Profil', Icon: User },
+  { to: '/profile', label: 'Profile', Icon: User },
 ];
 
 export function BottomNav() {
@@ -35,7 +35,7 @@ export function BottomNav() {
                     className={isActive ? 'text-teal' : 'text-ink'}
                     fill={isActive ? 'rgba(35,181,176,0.18)' : 'none'}
                   />
-                  {to === '/propositions' && proposedCount > 0 && (
+                  {to === '/proposals' && proposedCount > 0 && (
                     <span className="absolute -right-3 -top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-danger px-1 text-[11px] font-bold text-white">
                       {proposedCount}
                     </span>

@@ -1,5 +1,5 @@
-const WEEKDAYS = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
-const MONTHS = ['Jan', 'Fév', 'Mars', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'];
+const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export function parseIsoDate(iso: string): Date {
   return new Date(`${iso}T00:00:00`);
@@ -14,21 +14,21 @@ export function toIsoDate(d: Date): string {
 
 export function formatDate(iso: string): string {
   const d = parseIsoDate(iso);
-  return `${WEEKDAYS[d.getDay()]} ${String(d.getDate()).padStart(2, '0')} ${MONTHS[d.getMonth()]}`;
+  return `${WEEKDAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()}`;
 }
 
 export function formatHours(start: string, end: string): string {
   return `${start} - ${end}`;
 }
 
-const euro = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const amount = new Intl.NumberFormat('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function formatEuro(n: number): string {
-  return `${euro.format(n)} €`;
+  return `€${amount.format(n)}`;
 }
 
 export function splitEuro(n: number): { int: string; dec: string } {
-  const [int, dec] = euro.format(n).split(',');
+  const [int, dec] = amount.format(n).split('.');
   return { int, dec: dec ?? '00' };
 }
 

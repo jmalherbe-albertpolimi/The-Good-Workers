@@ -1,10 +1,4 @@
-export type Category =
-  | 'Vente'
-  | 'Logistique'
-  | 'Événementiel'
-  | 'Restauration'
-  | 'Inventaire'
-  | 'Accueil';
+export type Category = 'Retail' | 'Logistics' | 'Events' | 'Catering' | 'Inventory' | 'Reception';
 
 export type MissionStatus = 'proposed' | 'accepted' | 'refused' | 'done' | 'cancelled';
 
@@ -24,7 +18,7 @@ export interface Mission {
   endTime: string;
   city: string;
   address: string;
-  studentsCount: number;
+  workersCount: number;
   description: string;
   dressCode: string;
   contact: string;
@@ -37,17 +31,17 @@ export interface Mission {
 export interface Message {
   id: string;
   missionId: string;
-  from: 'staff' | 'student';
+  from: 'staff' | 'worker';
   author: string;
   text: string;
   at: string;
 }
 
-export type StudyLevel = 'Bac' | 'Bac+1' | 'Bac+2' | 'Bac+3' | 'Bac+4' | 'Bac+5' | 'Doctorat' | 'Autre';
+export type StudyLevel = 'High school' | 'Year 1' | 'Year 2' | 'Year 3' | 'Year 4' | 'Year 5' | 'PhD' | 'Other';
 
-export const STUDY_LEVELS: StudyLevel[] = ['Bac', 'Bac+1', 'Bac+2', 'Bac+3', 'Bac+4', 'Bac+5', 'Doctorat', 'Autre'];
+export const STUDY_LEVELS: StudyLevel[] = ['High school', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'PhD', 'Other'];
 
-export const ALL_CATEGORIES: Category[] = ['Vente', 'Logistique', 'Événementiel', 'Restauration', 'Inventaire', 'Accueil'];
+export const ALL_CATEGORIES: Category[] = ['Retail', 'Logistics', 'Events', 'Catering', 'Inventory', 'Reception'];
 
 export interface Profile {
   firstName: string;
@@ -76,12 +70,12 @@ export interface CategoryTheme {
 }
 
 export const CATEGORY_THEME: Record<Category, CategoryTheme> = {
-  Vente: { accent: '#f0507c', bg: '#fde3ea', text: '#ffffff' },
-  Logistique: { accent: '#3b82f6', bg: '#e0ebff', text: '#ffffff' },
-  Événementiel: { accent: '#8b5cf6', bg: '#ece5ff', text: '#ffffff' },
-  Restauration: { accent: '#f97316', bg: '#ffe8d6', text: '#ffffff' },
-  Inventaire: { accent: '#23b5b0', bg: '#dcf4f2', text: '#ffffff' },
-  Accueil: { accent: '#f7c948', bg: '#fff3cc', text: '#1f1f1f' },
+  Retail: { accent: '#f0507c', bg: '#fde3ea', text: '#ffffff' },
+  Logistics: { accent: '#3b82f6', bg: '#e0ebff', text: '#ffffff' },
+  Events: { accent: '#8b5cf6', bg: '#ece5ff', text: '#ffffff' },
+  Catering: { accent: '#f97316', bg: '#ffe8d6', text: '#ffffff' },
+  Inventory: { accent: '#23b5b0', bg: '#dcf4f2', text: '#ffffff' },
+  Reception: { accent: '#f7c948', bg: '#fff3cc', text: '#1f1f1f' },
 };
 
 export const ALL_REGIONS = [
@@ -90,20 +84,20 @@ export const ALL_REGIONS = [
   'Occitanie',
   'Nouvelle-Aquitaine',
   'Hauts-de-France',
-  'Provence-Alpes-Côte d\'Azur',
+  "Provence-Alpes-Côte d'Azur",
   'Grand Est',
   'Pays de la Loire',
-  'Bretagne',
+  'Brittany',
 ];
 
 export const MOTIVATION_LEVELS: { emoji: string; label: string }[] = [
-  { emoji: '😵', label: 'Endormi' },
-  { emoji: '😨', label: 'Frileux' },
-  { emoji: '😕', label: 'Hésitant' },
-  { emoji: '😬', label: 'Timide' },
-  { emoji: '😊', label: 'Sympa' },
-  { emoji: '😃', label: 'Motivé' },
-  { emoji: '🤗', label: 'Chaleureux' },
+  { emoji: '😵', label: 'Asleep' },
+  { emoji: '😨', label: 'Anxious' },
+  { emoji: '😕', label: 'Unsure' },
+  { emoji: '😬', label: 'Nervous' },
+  { emoji: '😊', label: 'Friendly' },
+  { emoji: '😃', label: 'Motivated' },
+  { emoji: '🤗', label: 'Warm' },
   { emoji: '😎', label: 'Cool' },
   { emoji: '🤩', label: 'Pop Star' },
 ];

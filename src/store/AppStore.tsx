@@ -27,14 +27,14 @@ function reducer(state: AppState, action: Action): AppState {
     case 'ACCEPT': {
       const mission = state.missions.find((m) => m.id === action.id);
       if (!mission) return state;
-      // Démo : message d'accueil automatique — sera envoyé par l'équipe via le back office plus tard.
+      // Demo: automatic welcome message — the team will send this from the back office later.
       const welcome: Message = {
         id: `msg_${Date.now()}`,
         missionId: mission.id,
         from: 'staff',
         author: mission.contact,
         at: nowIso(),
-        text: `Bienvenue sur la mission ${mission.company.name} ! Rendez-vous le ${formatDate(mission.date)} à ${mission.startTime} — ${mission.address}. N'hésite pas si tu as la moindre question 😊`,
+        text: `Welcome to the ${mission.company.name} mission! See you on ${formatDate(mission.date)} at ${mission.startTime} — ${mission.address}. Just ask if you have any questions 😊`,
       };
       return {
         ...state,
@@ -73,7 +73,7 @@ function reducer(state: AppState, action: Action): AppState {
       const msg: Message = {
         id: `msg_${Date.now()}`,
         missionId: action.missionId,
-        from: 'student',
+        from: 'worker',
         author: state.profile.firstName,
         at: nowIso(),
         text,
@@ -106,7 +106,7 @@ export function AppProvider({ storageKey, fallback, resetState, children }: Prov
   const [state, dispatch] = useReducer(reducer, undefined, () => {
     const saved = readJson<AppState>(storageKey);
     if (!saved) return fallback();
-    // Les champs ajoutés depuis la sauvegarde prennent la valeur par défaut.
+    // Fields added since the save fall back to their default value.
     const base = fallback();
     return { ...base, ...saved, profile: { ...base.profile, ...saved.profile } };
   });

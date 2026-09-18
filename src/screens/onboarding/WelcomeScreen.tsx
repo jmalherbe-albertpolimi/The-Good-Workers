@@ -20,30 +20,30 @@ export function WelcomeScreen() {
           The Good <span className="text-star">Workers</span>
         </div>
         <p className="mt-4 text-[22px] font-semibold leading-snug text-white/95">
-          Des missions étudiantes, payées, quand tu veux.
+          Student gigs, paid, whenever you want.
         </p>
         <ul className="mt-8 space-y-3 text-lg text-white/90">
           <li className="flex gap-3">
-            <span>⚡</span> Choisis tes missions d'un swipe
+            <span>⚡</span> Pick your missions with a swipe
           </li>
           <li className="flex gap-3">
-            <span>💸</span> Payé après chaque mission
+            <span>💸</span> Paid after every mission
           </li>
           <li className="flex gap-3">
-            <span>🤗</span> Une équipe qui t'accompagne
+            <span>🤗</span> A team that supports you
           </li>
         </ul>
       </div>
 
       <div className="relative">
-        <Link to="/inscription" className="block rounded-full bg-white py-4 text-center text-lg font-bold text-teal active:opacity-90">
-          Créer mon compte
+        <Link to="/signup" className="block rounded-full bg-white py-4 text-center text-lg font-bold text-teal active:opacity-90">
+          Create my account
         </Link>
-        <Link to="/connexion" className="mt-3 block rounded-full border-2 border-white py-4 text-center text-lg font-bold active:bg-white/10">
-          J'ai déjà un compte
+        <Link to="/login" className="mt-3 block rounded-full border-2 border-white py-4 text-center text-lg font-bold active:bg-white/10">
+          I already have an account
         </Link>
         <button type="button" onClick={enterDemo} className="mt-5 w-full text-center text-sm text-white/80 underline underline-offset-4">
-          Explorer avec un profil de démo
+          Explore with a demo profile
         </button>
       </div>
     </div>

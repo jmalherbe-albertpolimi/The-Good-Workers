@@ -15,12 +15,12 @@ export function ChatScreen() {
       <ScreenHeader title="Chat" />
       <div className="flex-1 overflow-y-auto pb-32">
         <h2 className="px-4 pb-4 pt-6 text-[26px] font-bold">
-          {n === 0 ? 'Aucune conversation active' : n === 1 ? '1 conversation active' : `${n} conversations actives`}
+          {n === 0 ? 'No active conversations' : n === 1 ? '1 active conversation' : `${n} active conversations`}
         </h2>
 
         {n === 0 ? (
           <p className="px-8 pt-10 text-center text-muted">
-            Les conversations s'ouvrent automatiquement dès que tu acceptes une mission.
+            A conversation opens automatically as soon as you accept a mission.
           </p>
         ) : (
           <ul className="space-y-1.5">
@@ -38,7 +38,7 @@ export function ChatScreen() {
                     <ChevronRight size={22} />
                   </div>
                   <p className="mt-2 line-clamp-2 text-[17px] leading-snug">
-                    <span className="font-bold">{last.from === 'student' ? 'Vous' : last.author} : </span>
+                    <span className="font-bold">{last.from === 'worker' ? 'You' : last.author}: </span>
                     {last.text}
                   </p>
                 </Link>

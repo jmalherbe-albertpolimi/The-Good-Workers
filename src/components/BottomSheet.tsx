@@ -14,7 +14,7 @@ export function BottomSheet({ open, onClose, title, children }: Props) {
       {open && (
         <>
           <motion.button
-            aria-label="Fermer"
+            aria-label="Close"
             className="absolute inset-0 z-40 bg-black/35"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

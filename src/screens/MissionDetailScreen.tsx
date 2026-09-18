@@ -24,7 +24,7 @@ export function MissionDetailScreen() {
     dispatch({ type: 'COMPLETE', id: mission.id });
   };
   const cancel = () => {
-    if (window.confirm('Annuler ta participation à cette mission ?')) {
+    if (window.confirm('Cancel your place on this mission?')) {
       dispatch({ type: 'CANCEL', id: mission.id });
       navigate('/missions');
     }
@@ -33,7 +33,7 @@ export function MissionDetailScreen() {
   return (
     <div className="flex h-full flex-col">
       <header className="flex items-center gap-2 bg-white px-3 pb-3 pt-[max(env(safe-area-inset-top),16px)]">
-        <button type="button" onClick={() => navigate(-1)} aria-label="Retour" className="rounded-full p-2 active:bg-tile">
+        <button type="button" onClick={() => navigate(-1)} aria-label="Back" className="rounded-full p-2 active:bg-tile">
           <ChevronLeft size={28} />
         </button>
         <h1 className="text-xl font-bold">Mission</h1>
@@ -58,24 +58,24 @@ export function MissionDetailScreen() {
 
         <ul className="grid grid-cols-2 gap-3 px-4 pt-4">
           <Info icon={<Calendar size={18} />} label="Date" value={formatDate(mission.date)} />
-          <Info icon={<Clock size={18} />} label="Heures" value={formatHours(mission.startTime, mission.endTime)} />
-          <Info icon={<MapPin size={18} />} label="Lieu" value={mission.city} />
-          <Info icon={<Users size={18} />} label="Students" value={String(mission.studentsCount)} />
+          <Info icon={<Clock size={18} />} label="Hours" value={formatHours(mission.startTime, mission.endTime)} />
+          <Info icon={<MapPin size={18} />} label="Place" value={mission.city} />
+          <Info icon={<Users size={18} />} label="Workers" value={String(mission.workersCount)} />
         </ul>
 
         <div className="space-y-5 px-5 pt-5">
-          <Block title="La mission">{mission.description}</Block>
-          <Block title="Adresse">{mission.address}</Block>
+          <Block title="The mission">{mission.description}</Block>
+          <Block title="Address">{mission.address}</Block>
           {mission.dressCode && <Block title="Dress code" icon={<Shirt size={14} />}>{mission.dressCode}</Block>}
-          <Block title="Ton contact" icon={<UserRound size={14} />}>{mission.contact}</Block>
+          <Block title="Your contact" icon={<UserRound size={14} />}>{mission.contact}</Block>
         </div>
 
         {mission.status === 'accepted' && (
           <div className="px-4 pt-6">
             <ol className="rounded-2xl bg-white p-4 shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
-              <Step done label="Mission acceptée" hint={mission.acceptedAt ? `le ${formatDate(toIsoDate(new Date(mission.acceptedAt)))}` : undefined} />
-              <Step done={dayReached} label="Jour J" hint={`${formatDate(mission.date)} • ${formatHours(mission.startTime, mission.endTime)}`} />
-              <Step done={false} label="C'est terminé" hint="À valider à la fin de la mission" last />
+              <Step done label="Mission accepted" hint={mission.acceptedAt ? `on ${formatDate(toIsoDate(new Date(mission.acceptedAt)))}` : undefined} />
+              <Step done={dayReached} label="Mission day" hint={`${formatDate(mission.date)} • ${formatHours(mission.startTime, mission.endTime)}`} />
+              <Step done={false} label="All done" hint="To confirm at the end of the mission" last />
             </ol>
 
             <button
@@ -83,62 +83,61 @@ export function MissionDetailScreen() {
               onClick={() => navigate(`/chat/${mission.id}`)}
               className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-white py-4 text-lg font-semibold shadow-[0_2px_10px_rgba(0,0,0,0.04)] active:bg-tile"
             >
-              <MessageCircle size={20} /> Ouvrir la conversation
+              <MessageCircle size={20} /> Open the conversation
             </button>
             <button
               type="button"
               onClick={complete}
               className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-teal py-4 text-lg font-semibold text-white active:opacity-90"
             >
-              <Check size={22} strokeWidth={3} /> C'est terminé
+              <Check size={22} strokeWidth={3} /> All done
             </button>
             {!missionEnded && (
               <p className="mt-2 text-center text-xs text-muted">
-                Démo : en production ce bouton ne s'active qu'à la fin de la mission.
+                Demo: in production this button only unlocks at the end of the mission.
               </p>
             )}
             <button type="button" onClick={cancel} className="mt-4 w-full py-3 font-semibold text-danger">
-              Annuler ma participation
+              Cancel my place
             </button>
           </div>
         )}
 
         {mission.status === 'done' && (
           <div className="mx-4 mt-6 rounded-2xl bg-white p-5 shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
-            <div className="text-xs font-bold uppercase tracking-wide text-muted">Mission terminée</div>
+            <div className="text-xs font-bold uppercase tracking-wide text-muted">Mission completed</div>
             <div className="mt-1 font-semibold">
-              Gains : <span className="tnum">{formatEuro(mission.price)}</span>
+              Earnings: <span className="tnum">{formatEuro(mission.price)}</span>
             </div>
-            <div className="mt-4 text-xs font-bold uppercase tracking-wide text-muted">Avis client</div>
+            <div className="mt-4 text-xs font-bold uppercase tracking-wide text-muted">Client review</div>
             {typeof mission.rating === 'number' ? (
               <div className="mt-1 flex items-center gap-3">
                 <span className="text-3xl font-black text-muted">{mission.rating}</span>
                 <Stars value={mission.rating} size={22} />
               </div>
             ) : (
-              <p className="mt-1 text-muted">En attente de l'avis du client.</p>
+              <p className="mt-1 text-muted">Waiting for the client's review.</p>
             )}
           </div>
         )}
 
         {mission.status === 'cancelled' && (
           <div className="mx-4 mt-6 rounded-2xl bg-red-50 p-5 text-danger">
-            <div className="font-bold">Mission annulée</div>
+            <div className="font-bold">Mission cancelled</div>
             <p className="mt-1 text-sm">{mission.description}</p>
           </div>
         )}
 
         {mission.status === 'proposed' && (
           <div className="mt-6 flex gap-3 px-4">
-            <button type="button" onClick={() => { dispatch({ type: 'REFUSE', id: mission.id }); navigate('/propositions'); }} className="flex-1 rounded-full bg-tile py-4 text-lg font-semibold text-danger">
-              Refuser
+            <button type="button" onClick={() => { dispatch({ type: 'REFUSE', id: mission.id }); navigate('/proposals'); }} className="flex-1 rounded-full bg-tile py-4 text-lg font-semibold text-danger">
+              Decline
             </button>
             <button type="button" onClick={() => { dispatch({ type: 'ACCEPT', id: mission.id }); navigate('/missions'); }} className="flex-1 rounded-full bg-teal py-4 text-lg font-semibold text-white">
-              Accepter
+              Accept
             </button>
           </div>
         )}
-
       </div>
     </div>
   );

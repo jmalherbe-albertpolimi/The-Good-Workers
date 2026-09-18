@@ -33,7 +33,7 @@ export function ConversationScreen() {
   return (
     <div className="flex h-full flex-col">
       <header className="flex items-center gap-2 bg-white px-3 pb-3 pt-[max(env(safe-area-inset-top),16px)] shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
-        <button type="button" onClick={() => navigate(-1)} aria-label="Retour" className="rounded-full p-2 active:bg-tile">
+        <button type="button" onClick={() => navigate(-1)} aria-label="Back" className="rounded-full p-2 active:bg-tile">
           <ChevronLeft size={28} />
         </button>
         <CompanyLogo company={mission.company} size={44} />
@@ -43,7 +43,7 @@ export function ConversationScreen() {
             {mission.city} • {formatDate(mission.date)} • {formatHours(mission.startTime, mission.endTime)}
           </div>
         </div>
-        <button type="button" onClick={() => navigate(`/missions/${mission.id}`)} aria-label="Détails de la mission" className="rounded-full p-2 active:bg-tile">
+        <button type="button" onClick={() => navigate(`/missions/${mission.id}`)} aria-label="Mission details" className="rounded-full p-2 active:bg-tile">
           <Info size={24} />
         </button>
       </header>
@@ -53,7 +53,7 @@ export function ConversationScreen() {
           const day = formatMessageDay(m.at);
           const showDay = day !== lastDay;
           lastDay = day;
-          const mine = m.from === 'student';
+          const mine = m.from === 'worker';
           return (
             <div key={m.id}>
               {showDay && <div className="my-3 text-center text-xs font-semibold uppercase tracking-wide text-muted">{day}</div>}
@@ -81,12 +81,12 @@ export function ConversationScreen() {
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="Écris ton message…"
+          placeholder="Write your message…"
           className="min-w-0 flex-1 rounded-full bg-tile px-5 py-3 outline-none placeholder:text-muted focus:ring-2 focus:ring-teal/40"
         />
         <button
           type="submit"
-          aria-label="Envoyer"
+          aria-label="Send"
           disabled={!draft.trim()}
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-teal text-white disabled:opacity-40"
         >

@@ -33,19 +33,19 @@ export function MissionDetailsSheet({ mission, open, onClose, onDecide }: Props)
 
       <ul className="mt-5 grid grid-cols-2 gap-3 text-[15px]">
         <InfoItem icon={<Calendar size={18} />} label="Date" value={formatDate(mission.date)} />
-        <InfoItem icon={<Clock size={18} />} label="Heures" value={formatHours(mission.startTime, mission.endTime)} />
-        <InfoItem icon={<MapPin size={18} />} label="Lieu" value={mission.city} />
-        <InfoItem icon={<Users size={18} />} label="Students" value={String(mission.studentsCount)} />
+        <InfoItem icon={<Clock size={18} />} label="Hours" value={formatHours(mission.startTime, mission.endTime)} />
+        <InfoItem icon={<MapPin size={18} />} label="Place" value={mission.city} />
+        <InfoItem icon={<Users size={18} />} label="Workers" value={String(mission.workersCount)} />
       </ul>
 
-      <Section title="La mission">{mission.description}</Section>
-      <Section title="Adresse">{mission.address}</Section>
+      <Section title="The mission">{mission.description}</Section>
+      <Section title="Address">{mission.address}</Section>
       {mission.dressCode && (
         <Section title="Dress code" icon={<Shirt size={16} />}>
           {mission.dressCode}
         </Section>
       )}
-      <Section title="Ton contact" icon={<UserRound size={16} />}>
+      <Section title="Your contact" icon={<UserRound size={16} />}>
         {mission.contact}
       </Section>
 
@@ -56,14 +56,14 @@ export function MissionDetailsSheet({ mission, open, onClose, onDecide }: Props)
             onClick={() => onDecide('refuse')}
             className="flex-1 rounded-full bg-tile py-4 text-lg font-semibold text-danger active:bg-black/10"
           >
-            Refuser
+            Decline
           </button>
           <button
             type="button"
             onClick={() => onDecide('accept')}
             className="flex-1 rounded-full bg-teal py-4 text-lg font-semibold text-white active:opacity-90"
           >
-            Accepter
+            Accept
           </button>
         </div>
       )}

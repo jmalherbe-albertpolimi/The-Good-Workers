@@ -1,4 +1,4 @@
-// AUTH DE DÉMO — comptes stockés dans le navigateur. À remplacer par Supabase Auth avec le back office.
+// DEMO AUTH — accounts stored in the browser. To be replaced by Supabase Auth with the back office.
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { Profile } from '../data/types';
 import { newUserState } from '../data/mockData';
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp: async (email, password, profile) => {
       const key = normalize(email);
       const accounts = loadAccounts();
-      if (accounts[key]) return { ok: false, error: 'Un compte existe déjà avec cet email.' };
+      if (accounts[key]) return { ok: false, error: 'An account already exists with this email.' };
       accounts[key] = { email: key, passwordHash: await sha256(password), createdAt: new Date().toISOString() };
       writeJson(ACCOUNTS_KEY, accounts);
       writeJson(stateKeyFor(key), newUserState({ ...profile, email: key }));
@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const key = normalize(email);
       const account = loadAccounts()[key];
       if (!account || account.passwordHash !== (await sha256(password))) {
-        return { ok: false, error: 'Email ou mot de passe incorrect.' };
+        return { ok: false, error: 'Incorrect email or password.' };
       }
       persistSession({ email: key, demo: false });
       return { ok: true };

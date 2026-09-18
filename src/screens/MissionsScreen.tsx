@@ -8,11 +8,11 @@ import { CompanyLogo } from '../components/CompanyLogo';
 import { formatDate, formatEuro, formatHours } from '../lib/format';
 
 export const STATUS_LABEL: Record<MissionStatus, { label: string; className: string }> = {
-  proposed: { label: 'Proposée', className: 'bg-tile text-muted' },
-  accepted: { label: 'Confirmée', className: 'bg-teal-light text-teal' },
-  done: { label: 'Terminée', className: 'bg-tile text-muted' },
-  cancelled: { label: 'Annulée', className: 'bg-red-50 text-danger' },
-  refused: { label: 'Refusée', className: 'bg-tile text-muted' },
+  proposed: { label: 'Proposed', className: 'bg-tile text-muted' },
+  accepted: { label: 'Confirmed', className: 'bg-teal-light text-teal' },
+  done: { label: 'Completed', className: 'bg-tile text-muted' },
+  cancelled: { label: 'Cancelled', className: 'bg-red-50 text-danger' },
+  refused: { label: 'Declined', className: 'bg-tile text-muted' },
 };
 
 export function MissionsScreen() {
@@ -28,10 +28,10 @@ export function MissionsScreen() {
       <div className="flex-1 overflow-y-auto pb-32">
         <div className="flex justify-center gap-1 px-5 pt-5">
           <TabPill active={tab === 'current'} onClick={() => setTab('current')}>
-            En cours ({current.length})
+            Ongoing ({current.length})
           </TabPill>
           <TabPill active={tab === 'past'} onClick={() => setTab('past')}>
-            Passées ({past.length})
+            Past ({past.length})
           </TabPill>
         </div>
 
@@ -98,12 +98,12 @@ function EmptyMissions({ past }: { past: boolean }) {
       </div>
       <p className="mt-6 text-lg font-semibold leading-snug">
         {past
-          ? "Aucune mission passée pour l'instant."
-          : "Aucune mission pour le moment. Pour rejoindre une mission, rends-toi dans l'onglet des propositions."}
+          ? 'No past missions yet.'
+          : 'No missions right now. To join one, head over to the proposals tab.'}
       </p>
       {!past && (
-        <Link to="/propositions" className="mt-14 text-xl font-semibold underline underline-offset-4">
-          ⚡ Voir les propositions
+        <Link to="/proposals" className="mt-14 text-xl font-semibold underline underline-offset-4">
+          ⚡ See the proposals
         </Link>
       )}
     </div>
