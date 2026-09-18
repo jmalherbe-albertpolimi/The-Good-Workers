@@ -1,22 +1,25 @@
 import { NavLink } from 'react-router-dom';
 import { MapPin, MessageCircle, User, Zap } from 'lucide-react';
 import { useApp, selectProposed } from '../store/AppStore';
+import { useLang } from '../i18n/LanguageProvider';
+import type { TranslationKey } from '../i18n/dict';
 
-const tabs = [
-  { to: '/proposals', label: 'Proposals', Icon: Zap },
-  { to: '/missions', label: 'Missions', Icon: MapPin },
-  { to: '/chat', label: 'Chat', Icon: MessageCircle },
-  { to: '/profile', label: 'Profile', Icon: User },
+const tabs: { to: string; labelKey: TranslationKey; Icon: typeof Zap }[] = [
+  { to: '/proposals', labelKey: 'nav.proposals', Icon: Zap },
+  { to: '/missions', labelKey: 'nav.missions', Icon: MapPin },
+  { to: '/chat', labelKey: 'nav.chat', Icon: MessageCircle },
+  { to: '/profile', labelKey: 'nav.profile', Icon: User },
 ];
 
 export function BottomNav() {
   const { state } = useApp();
+  const { t } = useLang();
   const proposedCount = selectProposed(state).length;
 
   return (
     <nav className="pointer-events-none absolute inset-x-0 bottom-0 z-30 px-4 pb-[max(env(safe-area-inset-bottom),12px)] pt-2">
       <div className="pointer-events-auto flex items-center justify-between rounded-full bg-white p-1.5 shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
-        {tabs.map(({ to, label, Icon }) => (
+        {tabs.map(({ to, labelKey, Icon }) => (
           <NavLink
             key={to}
             to={to}
@@ -41,7 +44,7 @@ export function BottomNav() {
                     </span>
                   )}
                 </span>
-                <span>{label}</span>
+                <span>{t(labelKey)}</span>
               </>
             )}
           </NavLink>

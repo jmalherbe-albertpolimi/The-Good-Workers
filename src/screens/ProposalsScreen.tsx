@@ -1,13 +1,15 @@
 import { useState } from 'react';
 import { ChevronDown, Heart, Search } from 'lucide-react';
-import { CATEGORY_THEME, type Category } from '../data/types';
+import { CATEGORY_THEME, categoryKey, type Category } from '../data/types';
 import { useApp, selectProposed } from '../store/AppStore';
 import { Avatar } from '../components/Avatar';
 import { MissionDetailsSheet } from '../components/MissionDetailsSheet';
+import { useLang } from '../i18n/LanguageProvider';
 import { SwipeCard, type Decision } from './proposals/SwipeCard';
 
 export function ProposalsScreen() {
   const { state, dispatch } = useApp();
+  const { t } = useLang();
   const [favOnly, setFavOnly] = useState(false);
   const [catFilter, setCatFilter] = useState<Category | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,10 +33,10 @@ export function ProposalsScreen() {
 
   const title =
     proposed.length === 0
-      ? 'No proposals'
+      ? t('proposals.titleZero')
       : proposed.length === 1
-        ? 'There is 1 proposal'
-        : `There are ${proposed.length} proposals`;
+        ? t('proposals.titleOne')
+        : t('proposals.titleOther', { count: proposed.length });
 
   return (
     <div className="flex h-full flex-col transition-colors duration-500" style={{ backgroundColor: theme.bg }}>
@@ -45,7 +47,7 @@ export function ProposalsScreen() {
           type="button"
           role="switch"
           aria-checked={favOnly}
-          aria-label="Only show my favourite categories"
+          aria-label={t('proposals.favAria')}
           onClick={() => setFavOnly((v) => !v)}
           className={`relative h-9 w-16 shrink-0 rounded-full transition-colors ${favOnly ? 'bg-teal' : 'bg-black/10'}`}
         >
@@ -69,18 +71,23 @@ export function ProposalsScreen() {
                 className="flex w-full items-center justify-between rounded-t-[22px] px-6 pb-7 pt-3 text-lg font-semibold"
                 style={{ backgroundColor: theme.accent, color: theme.text }}
               >
-                {catFilter ?? top.category}
+                {t(categoryKey(catFilter ?? top.category))}
                 <span className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-current">
                   <ChevronDown size={18} strokeWidth={2.5} />
                 </span>
               </button>
               {menuOpen && (
                 <div className="absolute left-0 right-0 top-full z-30 rounded-2xl bg-white p-2 shadow-xl">
-                  <MenuItem label="All categories" count={proposed.length} active={!catFilter} onClick={() => { setCatFilter(null); setMenuOpen(false); }} />
+                  <MenuItem
+                    label={t('proposals.allCategories')}
+                    count={proposed.length}
+                    active={!catFilter}
+                    onClick={() => { setCatFilter(null); setMenuOpen(false); }}
+                  />
                   {categories.map((c) => (
                     <MenuItem
                       key={c}
-                      label={c}
+                      label={t(categoryKey(c))}
                       count={proposed.filter((m) => m.category === c).length}
                       active={catFilter === c}
                       onClick={() => { setCatFilter(c); setMenuOpen(false); }}
@@ -131,20 +138,21 @@ function MenuItem({ label, count, active, onClick }: { label: string; count: num
 }
 
 function EmptyProposals({ filtered, onClear }: { filtered: boolean; onClear: () => void }) {
+  const { t } = useLang();
   return (
     <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
       <div className="flex h-28 w-28 items-center justify-center rounded-full bg-white/70">
         <Search size={48} className="text-muted" />
       </div>
       <p className="mt-6 text-lg font-semibold">
-        {filtered ? 'No proposal matches this filter.' : 'No proposals right now.'}
+        {filtered ? t('proposals.emptyFiltered') : t('proposals.emptyNone')}
       </p>
       <p className="mt-2 text-muted">
-        {filtered ? 'Clear the filter to see every proposal.' : 'Check back a little later, new missions come in every day.'}
+        {filtered ? t('proposals.emptyFilteredSub') : t('proposals.emptyNoneSub')}
       </p>
       {filtered && (
         <button type="button" onClick={onClear} className="mt-6 rounded-full bg-white px-6 py-3 font-semibold shadow">
-          See all proposals
+          {t('proposals.seeAll')}
         </button>
       )}
     </div>

@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import type { Profile } from '../data/types';
 import { newUserState } from '../data/mockData';
+import type { TranslationKey } from '../i18n/dict';
 import { ACCOUNTS_KEY, SESSION_KEY, readJson, removeKey, stateKeyFor, writeJson } from './storage';
 
 export interface Session {
@@ -17,7 +18,7 @@ interface Account {
 
 type Accounts = Record<string, Account>;
 
-export type AuthResult = { ok: true } | { ok: false; error: string };
+export type AuthResult = { ok: true } | { ok: false; errorKey: TranslationKey };
 
 interface AuthContextValue {
   session: Session | null;
@@ -58,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp: async (email, password, profile) => {
       const key = normalize(email);
       const accounts = loadAccounts();
-      if (accounts[key]) return { ok: false, error: 'An account already exists with this email.' };
+      if (accounts[key]) return { ok: false, errorKey: 'error.emailTaken' };
       accounts[key] = { email: key, passwordHash: await sha256(password), createdAt: new Date().toISOString() };
       writeJson(ACCOUNTS_KEY, accounts);
       writeJson(stateKeyFor(key), newUserState({ ...profile, email: key }));
@@ -69,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const key = normalize(email);
       const account = loadAccounts()[key];
       if (!account || account.passwordHash !== (await sha256(password))) {
-        return { ok: false, error: 'Incorrect email or password.' };
+        return { ok: false, errorKey: 'error.badCredentials' };
       }
       persistSession({ email: key, demo: false });
       return { ok: true };

@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, Eye, EyeOff } from 'lucide-react';
-import { ALL_CATEGORIES, ALL_REGIONS, STUDY_LEVELS, type Category, type StudyLevel } from '../../data/types';
+import { ALL_CATEGORIES, ALL_REGIONS, STUDY_LEVELS, categoryKey, regionKey, studyLevelKey, type Category, type StudyLevel } from '../../data/types';
 import { newProfile } from '../../data/mockData';
 import { useAuth } from '../../store/AuthStore';
+import { useLang } from '../../i18n/LanguageProvider';
+import type { TranslationKey } from '../../i18n/dict';
 import { Chip, Field, OptionCard, StepTitle, inputClass } from './ui';
 
 type Step = 'account' | 'identity' | 'studies' | 'status' | 'preferences' | 'done';
@@ -59,33 +61,33 @@ function ageOf(birthDate: string) {
   return beforeBirthday ? age - 1 : age;
 }
 
-function stepError(step: Step, f: Form): string | null {
+function stepError(step: Step, f: Form): TranslationKey | null {
   switch (step) {
     case 'account':
-      if (!EMAIL_RE.test(f.email.trim())) return 'Enter a valid email address.';
-      if (f.password.length < 8) return 'Your password needs at least 8 characters.';
+      if (!EMAIL_RE.test(f.email.trim())) return 'error.invalidEmail';
+      if (f.password.length < 8) return 'error.shortPassword';
       return null;
     case 'identity':
-      if (!f.firstName.trim() || !f.lastName.trim()) return 'First name and last name are required.';
-      if (digits(f.phone).length !== 10) return 'Your phone number must have 10 digits.';
+      if (!f.firstName.trim() || !f.lastName.trim()) return 'error.nameRequired';
+      if (digits(f.phone).length !== 10) return 'error.phoneDigits';
       {
         const iso = birthToIso(f.birthDate);
-        if (!iso) return 'Date of birth must be DD/MM/YYYY.';
-        if (ageOf(iso) < 18) return 'You must be 18 to join The Good Workers.';
+        if (!iso) return 'error.birthFormat';
+        if (ageOf(iso) < 18) return 'error.age18';
       }
       return null;
     case 'studies':
-      if (!f.school.trim()) return 'Tell us your school or university.';
-      if (!f.studyLevel) return 'Choose your study level.';
-      if (!f.city.trim()) return 'Tell us your city.';
+      if (!f.school.trim()) return 'error.schoolRequired';
+      if (!f.studyLevel) return 'error.levelRequired';
+      if (!f.city.trim()) return 'error.cityRequired';
       return null;
     case 'status':
-      if (f.hasSiret === null) return 'Answer the question to continue.';
-      if (f.hasSiret && digits(f.siret).length !== 14) return 'A SIRET number has 14 digits.';
+      if (f.hasSiret === null) return 'error.answerQuestion';
+      if (f.hasSiret && digits(f.siret).length !== 14) return 'error.siretDigits';
       return null;
     case 'preferences':
-      if (f.regions.length === 0) return 'Choose at least one region.';
-      if (f.categories.length === 0) return 'Choose at least one category.';
+      if (f.regions.length === 0) return 'error.regionRequired';
+      if (f.categories.length === 0) return 'error.categoryRequired';
       return null;
     case 'done':
       return null;
@@ -95,18 +97,23 @@ function stepError(step: Step, f: Form): string | null {
 export function SignupScreen() {
   const navigate = useNavigate();
   const { signUp, emailExists } = useAuth();
+  const { t } = useLang();
   const [form, setForm] = useState<Form>(EMPTY);
   const [index, setIndex] = useState(0);
   const [dir, setDir] = useState(1);
   const [showError, setShowError] = useState(false);
-  const [extraError, setExtraError] = useState<string | null>(null);
+  const [extraError, setExtraError] = useState<TranslationKey | null>(null);
   const [showPw, setShowPw] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const step = STEPS[index];
   const set = <K extends keyof Form>(key: K, value: Form[K]) => setForm((f) => ({ ...f, [key]: value }));
   const toggle = <T,>(list: T[], item: T) => (list.includes(item) ? list.filter((x) => x !== item) : [...list, item]);
-  const error = extraError ?? stepError(step, form);
+  const errorKey = extraError ?? stepError(step, form);
+  const regionLabel = (region: string) => {
+    const key = regionKey(region);
+    return key ? t(key) : region;
+  };
 
   const goTo = (next: number) => {
     setDir(next > index ? 1 : -1);
@@ -121,7 +128,7 @@ export function SignupScreen() {
       return;
     }
     if (step === 'account' && emailExists(form.email)) {
-      setExtraError('An account already exists with this email. Sign in instead.');
+      setExtraError('error.emailExists');
       setShowError(true);
       return;
     }
@@ -147,7 +154,7 @@ export function SignupScreen() {
     const result = await signUp(form.email, form.password, profile);
     setBusy(false);
     if (!result.ok) {
-      setExtraError(result.error);
+      setExtraError(result.errorKey);
       setShowError(true);
     }
   };
@@ -157,14 +164,12 @@ export function SignupScreen() {
       <div className="flex h-full flex-col bg-teal px-6 pb-[max(env(safe-area-inset-bottom),24px)] pt-[max(env(safe-area-inset-top),24px)] text-center text-white">
         <div className="flex flex-1 flex-col items-center justify-center">
           <span className="text-[96px] leading-none">🎉</span>
-          <h1 className="mt-6 text-[36px] font-black leading-tight">Welcome {form.firstName.trim()}!</h1>
-          <p className="mt-4 text-lg text-white/90">
-            Your account is created. The Good Workers team reviews your profile within 48 hours — meanwhile, take a look at the proposals near you.
-          </p>
+          <h1 className="mt-6 text-[36px] font-black leading-tight">{t('signup.done.title', { name: form.firstName.trim() })}</h1>
+          <p className="mt-4 text-lg text-white/90">{t('signup.done.body')}</p>
         </div>
-        {showError && error && <p className="mb-3 text-sm font-semibold text-[#ffd6d6]">{error}</p>}
+        {showError && errorKey && <p className="mb-3 text-sm font-semibold text-[#ffd6d6]">{t(errorKey)}</p>}
         <button type="button" onClick={finish} disabled={busy} className="w-full rounded-full bg-white py-4 text-lg font-bold text-teal disabled:opacity-60">
-          {busy ? 'Creating your account…' : "Let's go"}
+          {busy ? t('signup.done.ctaBusy') : t('signup.done.cta')}
         </button>
       </div>
     );
@@ -175,7 +180,7 @@ export function SignupScreen() {
   return (
     <div className="flex h-full flex-col bg-paper">
       <header className="flex items-center gap-2 px-4 pt-[max(env(safe-area-inset-top),16px)]">
-        <button type="button" onClick={back} aria-label="Back" className="-ml-2 rounded-full p-2 active:bg-tile">
+        <button type="button" onClick={back} aria-label={t('common.back')} className="-ml-2 rounded-full p-2 active:bg-tile">
           <ChevronLeft size={28} />
         </button>
         <div className="flex flex-1 gap-1.5">
@@ -206,12 +211,12 @@ export function SignupScreen() {
             >
               {step === 'account' && (
                 <>
-                  <StepTitle title="Create your account" subtitle="The details you'll use to sign in to The Good Workers." />
+                  <StepTitle title={t('signup.account.title')} subtitle={t('signup.account.subtitle')} />
                   <div className="space-y-4">
-                    <Field label="Email">
-                      <input type="email" inputMode="email" autoComplete="email" value={form.email} onChange={(e) => set('email', e.target.value)} className={inputClass} placeholder="you@email.com" autoFocus />
+                    <Field label={t('common.email')}>
+                      <input type="email" inputMode="email" autoComplete="email" value={form.email} onChange={(e) => set('email', e.target.value)} className={inputClass} placeholder={t('common.emailPlaceholder')} autoFocus />
                     </Field>
-                    <Field label="Password" hint="8 characters minimum">
+                    <Field label={t('common.password')} hint={t('signup.account.passwordHint')}>
                       <div className="relative">
                         <input
                           type={showPw ? 'text' : 'password'}
@@ -220,7 +225,7 @@ export function SignupScreen() {
                           onChange={(e) => set('password', e.target.value)}
                           className={`${inputClass} pr-12`}
                         />
-                        <button type="button" onClick={() => setShowPw((v) => !v)} aria-label={showPw ? 'Hide' : 'Show'} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted">
+                        <button type="button" onClick={() => setShowPw((v) => !v)} aria-label={showPw ? t('common.hide') : t('common.show')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted">
                           {showPw ? <EyeOff size={20} /> : <Eye size={20} />}
                         </button>
                       </div>
@@ -231,24 +236,24 @@ export function SignupScreen() {
 
               {step === 'identity' && (
                 <>
-                  <StepTitle title="Who are you?" subtitle="These details appear on your missions." />
+                  <StepTitle title={t('signup.identity.title')} subtitle={t('signup.identity.subtitle')} />
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-3">
-                      <Field label="First name">
+                      <Field label={t('common.firstName')}>
                         <input autoComplete="given-name" value={form.firstName} onChange={(e) => set('firstName', e.target.value)} className={inputClass} autoFocus />
                       </Field>
-                      <Field label="Last name">
+                      <Field label={t('common.lastName')}>
                         <input autoComplete="family-name" value={form.lastName} onChange={(e) => set('lastName', e.target.value)} className={inputClass} />
                       </Field>
                     </div>
-                    <Field label="Phone">
+                    <Field label={t('common.phone')}>
                       <input type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} className={inputClass} placeholder="06 12 34 56 78" />
                     </Field>
-                    <Field label="Date of birth" hint="You must be 18 to work with The Good Workers.">
+                    <Field label={t('signup.identity.birthDate')} hint={t('signup.identity.birthHint')}>
                       <input
                         inputMode="numeric"
                         autoComplete="bday"
-                        placeholder="DD/MM/YYYY"
+                        placeholder={t('signup.identity.birthPlaceholder')}
                         maxLength={10}
                         value={form.birthDate}
                         onChange={(e) => set('birthDate', formatBirthInput(e.target.value))}
@@ -261,22 +266,22 @@ export function SignupScreen() {
 
               {step === 'studies' && (
                 <>
-                  <StepTitle title="Your studies" subtitle="So we can offer missions that fit your timetable." />
+                  <StepTitle title={t('signup.studies.title')} subtitle={t('signup.studies.subtitle')} />
                   <div className="space-y-4">
-                    <Field label="School / university">
-                      <input value={form.school} onChange={(e) => set('school', e.target.value)} className={inputClass} placeholder="e.g. Paris-Dauphine University" autoFocus />
+                    <Field label={t('signup.studies.school')}>
+                      <input value={form.school} onChange={(e) => set('school', e.target.value)} className={inputClass} placeholder={t('signup.studies.schoolPlaceholder')} autoFocus />
                     </Field>
-                    <Field label="Study level">
+                    <Field label={t('signup.studies.level')}>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {STUDY_LEVELS.map((lvl) => (
                           <Chip key={lvl} active={form.studyLevel === lvl} onClick={() => set('studyLevel', lvl)}>
-                            {lvl}
+                            {t(studyLevelKey(lvl))}
                           </Chip>
                         ))}
                       </div>
                     </Field>
-                    <Field label="City">
-                      <input autoComplete="address-level2" value={form.city} onChange={(e) => set('city', e.target.value)} className={inputClass} placeholder="e.g. Paris" />
+                    <Field label={t('signup.studies.city')}>
+                      <input autoComplete="address-level2" value={form.city} onChange={(e) => set('city', e.target.value)} className={inputClass} placeholder={t('signup.studies.cityPlaceholder')} />
                     </Field>
                   </div>
                 </>
@@ -284,21 +289,21 @@ export function SignupScreen() {
 
               {step === 'status' && (
                 <>
-                  <StepTitle title="Your self-employed status" subtitle="To get paid, The Good Workers works with self-employed students." />
+                  <StepTitle title={t('signup.status.title')} subtitle={t('signup.status.subtitle')} />
                   <div className="space-y-3">
-                    <OptionCard active={form.hasSiret === true} onClick={() => set('hasSiret', true)} title="Yes, I already have my SIRET" description="I'll enter it right now." />
-                    <OptionCard active={form.hasSiret === false} onClick={() => set('hasSiret', false)} title="Not yet" description="I'll set it up after signing up." />
+                    <OptionCard active={form.hasSiret === true} onClick={() => set('hasSiret', true)} title={t('signup.status.yes')} description={t('signup.status.yesDesc')} />
+                    <OptionCard active={form.hasSiret === false} onClick={() => set('hasSiret', false)} title={t('signup.status.no')} description={t('signup.status.noDesc')} />
                   </div>
                   {form.hasSiret === true && (
                     <div className="mt-5">
-                      <Field label="SIRET number" hint="14 digits">
+                      <Field label={t('signup.status.siret')} hint={t('signup.status.siretHint')}>
                         <input inputMode="numeric" value={form.siret} onChange={(e) => set('siret', e.target.value)} className={`${inputClass} tnum`} placeholder="123 456 789 00012" autoFocus />
                       </Field>
                     </div>
                   )}
                   {form.hasSiret === false && (
                     <div className="mt-5 rounded-2xl bg-teal-light p-4 text-[15px] leading-relaxed">
-                      <span className="font-bold">No worries.</span> Registering is free and takes about ten minutes. The team will walk you through it once your profile is approved.
+                      <span className="font-bold">{t('signup.status.noWorriesBold')}</span> {t('signup.status.noWorries')}
                     </div>
                   )}
                 </>
@@ -306,22 +311,22 @@ export function SignupScreen() {
 
               {step === 'preferences' && (
                 <>
-                  <StepTitle title="Your preferences" subtitle="Where and on what would you like to get proposals?" />
-                  <Field label="Regions">
+                  <StepTitle title={t('signup.prefs.title')} subtitle={t('signup.prefs.subtitle')} />
+                  <Field label={t('signup.prefs.regions')}>
                     <div className="mt-2 flex flex-wrap gap-2">
                       {ALL_REGIONS.map((r) => (
                         <Chip key={r} active={form.regions.includes(r)} onClick={() => set('regions', toggle(form.regions, r))}>
-                          {r}
+                          {regionLabel(r)}
                         </Chip>
                       ))}
                     </div>
                   </Field>
                   <div className="mt-6">
-                    <Field label="Mission categories">
+                    <Field label={t('signup.prefs.categories')}>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {ALL_CATEGORIES.map((c) => (
                           <Chip key={c} active={form.categories.includes(c)} onClick={() => set('categories', toggle(form.categories, c))}>
-                            {c}
+                            {t(categoryKey(c))}
                           </Chip>
                         ))}
                       </div>
@@ -334,9 +339,9 @@ export function SignupScreen() {
         </div>
 
         <div className="px-5 pb-[max(env(safe-area-inset-bottom),20px)] pt-3">
-          {showError && error && <p className="mb-3 text-center text-sm font-semibold text-danger">{error}</p>}
+          {showError && errorKey && <p className="mb-3 text-center text-sm font-semibold text-danger">{t(errorKey)}</p>}
           <button type="submit" className="w-full rounded-full bg-teal py-4 text-lg font-bold text-white active:opacity-90">
-            Continue
+            {t('common.continue')}
           </button>
         </div>
       </form>

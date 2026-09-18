@@ -1,3 +1,6 @@
+import type { TranslationKey } from '../i18n/dict';
+import type { Localized } from '../i18n/lang';
+
 export type Category = 'Retail' | 'Logistics' | 'Events' | 'Catering' | 'Inventory' | 'Reception';
 
 export type MissionStatus = 'proposed' | 'accepted' | 'refused' | 'done' | 'cancelled';
@@ -16,11 +19,11 @@ export interface Mission {
   date: string;
   startTime: string;
   endTime: string;
-  city: string;
+  city: Localized;
   address: string;
   workersCount: number;
-  description: string;
-  dressCode: string;
+  description: Localized;
+  dressCode: Localized | '';
   contact: string;
   status: MissionStatus;
   rating?: number;
@@ -33,15 +36,19 @@ export interface Message {
   missionId: string;
   from: 'staff' | 'worker';
   author: string;
-  text: string;
+  text: string | Localized;
   at: string;
 }
 
-export type StudyLevel = 'High school' | 'Year 1' | 'Year 2' | 'Year 3' | 'Year 4' | 'Year 5' | 'PhD' | 'Other';
+export type StudyLevel = 'highschool' | 'year1' | 'year2' | 'year3' | 'year4' | 'year5' | 'phd' | 'other';
 
-export const STUDY_LEVELS: StudyLevel[] = ['High school', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'PhD', 'Other'];
+export const STUDY_LEVELS: StudyLevel[] = ['highschool', 'year1', 'year2', 'year3', 'year4', 'year5', 'phd', 'other'];
+
+export const studyLevelKey = (level: StudyLevel): TranslationKey => `level.${level}` as TranslationKey;
 
 export const ALL_CATEGORIES: Category[] = ['Retail', 'Logistics', 'Events', 'Catering', 'Inventory', 'Reception'];
+
+export const categoryKey = (category: Category): TranslationKey => `category.${category}` as TranslationKey;
 
 export interface Profile {
   firstName: string;
@@ -78,6 +85,7 @@ export const CATEGORY_THEME: Record<Category, CategoryTheme> = {
   Reception: { accent: '#f7c948', bg: '#fff3cc', text: '#1f1f1f' },
 };
 
+// Region names are stored in French (they are proper nouns); only the ones that differ get translated.
 export const ALL_REGIONS = [
   'Île-de-France',
   'Auvergne-Rhône-Alpes',
@@ -87,17 +95,23 @@ export const ALL_REGIONS = [
   "Provence-Alpes-Côte d'Azur",
   'Grand Est',
   'Pays de la Loire',
-  'Brittany',
+  'Bretagne',
 ];
 
-export const MOTIVATION_LEVELS: { emoji: string; label: string }[] = [
-  { emoji: '😵', label: 'Asleep' },
-  { emoji: '😨', label: 'Anxious' },
-  { emoji: '😕', label: 'Unsure' },
-  { emoji: '😬', label: 'Nervous' },
-  { emoji: '😊', label: 'Friendly' },
-  { emoji: '😃', label: 'Motivated' },
-  { emoji: '🤗', label: 'Warm' },
-  { emoji: '😎', label: 'Cool' },
-  { emoji: '🤩', label: 'Pop Star' },
+const TRANSLATED_REGIONS = new Set(['Bretagne']);
+
+export function regionKey(region: string): TranslationKey | null {
+  return TRANSLATED_REGIONS.has(region) ? (`region.${region}` as TranslationKey) : null;
+}
+
+export const MOTIVATION_LEVELS: { emoji: string; key: TranslationKey }[] = [
+  { emoji: '😵', key: 'motivation.asleep' },
+  { emoji: '😨', key: 'motivation.anxious' },
+  { emoji: '😕', key: 'motivation.unsure' },
+  { emoji: '😬', key: 'motivation.nervous' },
+  { emoji: '😊', key: 'motivation.friendly' },
+  { emoji: '😃', key: 'motivation.motivated' },
+  { emoji: '🤗', key: 'motivation.warm' },
+  { emoji: '😎', key: 'motivation.cool' },
+  { emoji: '🤩', key: 'motivation.popstar' },
 ];

@@ -1,7 +1,9 @@
 import { Calendar, Clock, MapPin, Shirt, UserRound, Users } from 'lucide-react';
-import { CATEGORY_THEME, type Mission } from '../data/types';
+import { CATEGORY_THEME, categoryKey, type Mission } from '../data/types';
 import { BottomSheet } from './BottomSheet';
 import { CompanyLogo } from './CompanyLogo';
+import { useLang } from '../i18n/LanguageProvider';
+import { loc } from '../i18n/lang';
 import { formatDate, formatEuro, formatHours } from '../lib/format';
 
 interface Props {
@@ -12,6 +14,7 @@ interface Props {
 }
 
 export function MissionDetailsSheet({ mission, open, onClose, onDecide }: Props) {
+  const { lang, t } = useLang();
   if (!mission) return null;
   const theme = CATEGORY_THEME[mission.category];
 
@@ -25,27 +28,27 @@ export function MissionDetailsSheet({ mission, open, onClose, onDecide }: Props)
             className="mt-1 inline-block rounded-full px-3 py-0.5 text-sm font-semibold"
             style={{ backgroundColor: theme.accent, color: theme.text }}
           >
-            {mission.category}
+            {t(categoryKey(mission.category))}
           </span>
         </div>
-        <div className="tnum text-2xl font-black">{formatEuro(mission.price)}</div>
+        <div className="tnum text-2xl font-black">{formatEuro(mission.price, lang)}</div>
       </div>
 
       <ul className="mt-5 grid grid-cols-2 gap-3 text-[15px]">
-        <InfoItem icon={<Calendar size={18} />} label="Date" value={formatDate(mission.date)} />
-        <InfoItem icon={<Clock size={18} />} label="Hours" value={formatHours(mission.startTime, mission.endTime)} />
-        <InfoItem icon={<MapPin size={18} />} label="Place" value={mission.city} />
-        <InfoItem icon={<Users size={18} />} label="Workers" value={String(mission.workersCount)} />
+        <InfoItem icon={<Calendar size={18} />} label={t('common.date')} value={formatDate(mission.date, lang)} />
+        <InfoItem icon={<Clock size={18} />} label={t('common.hours')} value={formatHours(mission.startTime, mission.endTime)} />
+        <InfoItem icon={<MapPin size={18} />} label={t('common.place')} value={loc(mission.city, lang)} />
+        <InfoItem icon={<Users size={18} />} label={t('common.workers')} value={String(mission.workersCount)} />
       </ul>
 
-      <Section title="The mission">{mission.description}</Section>
-      <Section title="Address">{mission.address}</Section>
+      <Section title={t('mission.theMission')}>{loc(mission.description, lang)}</Section>
+      <Section title={t('mission.address')}>{mission.address}</Section>
       {mission.dressCode && (
-        <Section title="Dress code" icon={<Shirt size={16} />}>
-          {mission.dressCode}
+        <Section title={t('mission.dressCode')} icon={<Shirt size={16} />}>
+          {loc(mission.dressCode, lang)}
         </Section>
       )}
-      <Section title="Your contact" icon={<UserRound size={16} />}>
+      <Section title={t('mission.yourContact')} icon={<UserRound size={16} />}>
         {mission.contact}
       </Section>
 
@@ -56,14 +59,14 @@ export function MissionDetailsSheet({ mission, open, onClose, onDecide }: Props)
             onClick={() => onDecide('refuse')}
             className="flex-1 rounded-full bg-tile py-4 text-lg font-semibold text-danger active:bg-black/10"
           >
-            Decline
+            {t('proposals.decline')}
           </button>
           <button
             type="button"
             onClick={() => onDecide('accept')}
             className="flex-1 rounded-full bg-teal py-4 text-lg font-semibold text-white active:opacity-90"
           >
-            Accept
+            {t('proposals.accept')}
           </button>
         </div>
       )}

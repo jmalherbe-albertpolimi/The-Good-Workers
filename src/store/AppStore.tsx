@@ -34,7 +34,10 @@ function reducer(state: AppState, action: Action): AppState {
         from: 'staff',
         author: mission.contact,
         at: nowIso(),
-        text: `Welcome to the ${mission.company.name} mission! See you on ${formatDate(mission.date)} at ${mission.startTime} — ${mission.address}. Just ask if you have any questions 😊`,
+        text: {
+          en: `Welcome to the ${mission.company.name} mission! See you on ${formatDate(mission.date, 'en')} at ${mission.startTime} — ${mission.address}. Just ask if you have any questions 😊`,
+          fr: `Bienvenue sur la mission ${mission.company.name} ! Rendez-vous le ${formatDate(mission.date, 'fr')} à ${mission.startTime} — ${mission.address}. N'hésite pas si tu as la moindre question 😊`,
+        },
       };
       return {
         ...state,
