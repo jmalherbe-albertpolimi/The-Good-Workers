@@ -71,7 +71,7 @@ function stepError(step: Step, f: Form): string | null {
       {
         const iso = birthToIso(f.birthDate);
         if (!iso) return 'Date de naissance au format JJ/MM/AAAA.';
-        if (ageOf(iso) < 18) return 'Il faut avoir 18 ans pour rejoindre The Good Worker.';
+        if (ageOf(iso) < 18) return 'Il faut avoir 18 ans pour rejoindre The Good Workers.';
       }
       return null;
     case 'studies':
@@ -159,7 +159,7 @@ export function SignupScreen() {
           <span className="text-[96px] leading-none">🎉</span>
           <h1 className="mt-6 text-[36px] font-black leading-tight">Bienvenue {form.firstName.trim()} !</h1>
           <p className="mt-4 text-lg text-white/90">
-            Ton compte est créé. L'équipe The Good Worker valide ton profil sous 48 h — en attendant, découvre déjà les propositions autour de toi.
+            Ton compte est créé. L'équipe The Good Workers valide ton profil sous 48 h — en attendant, découvre déjà les propositions autour de toi.
           </p>
         </div>
         {showError && error && <p className="mb-3 text-sm font-semibold text-[#ffd6d6]">{error}</p>}
@@ -206,7 +206,7 @@ export function SignupScreen() {
             >
               {step === 'account' && (
                 <>
-                  <StepTitle title="Crée ton compte" subtitle="Tes identifiants pour te connecter à The Good Worker." />
+                  <StepTitle title="Crée ton compte" subtitle="Tes identifiants pour te connecter à The Good Workers." />
                   <div className="space-y-4">
                     <Field label="Email">
                       <input type="email" inputMode="email" autoComplete="email" value={form.email} onChange={(e) => set('email', e.target.value)} className={inputClass} placeholder="toi@email.fr" autoFocus />
@@ -244,7 +244,7 @@ export function SignupScreen() {
                     <Field label="Téléphone">
                       <input type="tel" inputMode="tel" autoComplete="tel" value={form.phone} onChange={(e) => set('phone', e.target.value)} className={inputClass} placeholder="06 12 34 56 78" />
                     </Field>
-                    <Field label="Date de naissance" hint="Il faut avoir 18 ans pour travailler avec The Good Worker.">
+                    <Field label="Date de naissance" hint="Il faut avoir 18 ans pour travailler avec The Good Workers.">
                       <input
                         inputMode="numeric"
                         autoComplete="bday"
@@ -284,7 +284,7 @@ export function SignupScreen() {
 
               {step === 'status' && (
                 <>
-                  <StepTitle title="Ton statut auto-entrepreneur" subtitle="Pour être payé, The Good Worker travaille avec des étudiants auto-entrepreneurs." />
+                  <StepTitle title="Ton statut auto-entrepreneur" subtitle="Pour être payé, The Good Workers travaille avec des étudiants auto-entrepreneurs." />
                   <div className="space-y-3">
                     <OptionCard active={form.hasSiret === true} onClick={() => set('hasSiret', true)} title="Oui, j'ai déjà mon SIRET" description="Je le renseigne tout de suite." />
                     <OptionCard active={form.hasSiret === false} onClick={() => set('hasSiret', false)} title="Pas encore" description="Je le créerai après mon inscription." />

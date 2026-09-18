@@ -176,7 +176,7 @@ export function ProfileScreen() {
             Dans l'onglet Propositions, glisse la carte vers la droite ou appuie sur ✓. La mission apparaît ensuite dans « Missions » et une conversation s'ouvre avec ton contact.
           </Faq>
           <Faq q="Quand suis-je payé ?">
-            Après validation de l'étape « C'est terminé », le montant est ajouté à ton solde. Le virement est déclenché par l'équipe The Good Worker.
+            Après validation de l'étape « C'est terminé », le montant est ajouté à ton solde. Le virement est déclenché par l'équipe The Good Workers.
           </Faq>
           <Faq q="Je ne peux plus venir, que faire ?">
             Ouvre la mission puis « Annuler ma participation », et préviens ton contact dans le chat le plus tôt possible.
@@ -201,7 +201,7 @@ export function ProfileScreen() {
           </div>
         </dl>
         <p className="mt-5 text-sm text-muted">
-          Les virements sont déclenchés par l'équipe The Good Worker après chaque mission validée.
+          Les virements sont déclenchés par l'équipe The Good Workers après chaque mission validée.
         </p>
       </BottomSheet>
     </div>

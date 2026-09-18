@@ -54,7 +54,7 @@ export function SettingsScreen() {
           </li>
         </ul>
 
-        <p className="mt-6 text-center text-xs text-muted">The Good Worker — démo v0.2 · comptes et données stockés uniquement sur cet appareil.</p>
+        <p className="mt-6 text-center text-xs text-muted">The Good Workers — démo v0.2 · comptes et données stockés uniquement sur cet appareil.</p>
       </div>
     </div>
   );

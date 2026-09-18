@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../store/AuthStore';
+import { BrandIcon } from '../../components/BrandIcon';
 import { Field, StepTitle, inputClass } from './ui';
 
 export function LoginScreen() {
@@ -32,7 +33,10 @@ export function LoginScreen() {
       </header>
 
       <form onSubmit={submit} className="flex min-h-0 flex-1 flex-col">
-        <div className="flex-1 overflow-y-auto px-5 pt-4">
+        <div className="flex-1 overflow-y-auto px-5 pt-2">
+          <div className="mb-6 flex justify-center">
+            <BrandIcon size={80} />
+          </div>
           <StepTitle title="Content de te revoir !" subtitle="Connecte-toi pour retrouver tes missions." />
           <div className="space-y-4">
             <Field label="Email">
